@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Hero(){
+export default function Hero({ onStart }){
   return (
     <section className="hero">
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'}}>
