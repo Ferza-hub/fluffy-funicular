@@ -11,7 +11,7 @@ export default function VerdictSummary({channel}){
     <div className="card verdict-card">
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
         <div>
-          <div style={{fontSize:12,color:'var(--muted)'}}>STATUS CHANNEL</div>
+          <div style={{fontSize:12,color:'var(--muted)'}}>POSISI ANDA</div>
           <div style={{fontSize:22,fontWeight:800,marginTop:6}}>🟡 HAMPIR SIAP</div>
         </div>
         <div style={{fontSize:28,fontWeight:800}}>{overallPercent}%</div>

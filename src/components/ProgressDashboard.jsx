@@ -10,34 +10,40 @@ export default function ProgressDashboard({channel, packageInfo}){
   const percentHours = Math.round((channel.watchHours / hoursTarget) * 100)
   const overallPercent = Math.round((percentSubs + percentHours) / 2)
   const packageName = packageInfo?.selectedPackage?.title || 'Belum memilih paket'
-  const days = packageInfo?.packageStartedAt ? Math.max(1, Math.floor((Date.now() - new Date(packageInfo.packageStartedAt).getTime())/(1000*60*60*24))+1) : 0
   const eta = packageInfo?.selectedPackage?.eta || 30
 
   return (
-    <div className="card dashboard-card">
-      <h4>Dashboard Progress</h4>
-      <div className="dashboard-grid">
-        <div className="dashboard-box">
-          <div style={{fontSize:12,color:'var(--muted)'}}>STATUS</div>
-          <div style={{fontWeight:800,fontSize:18}}>🟡 MENUJU TARGET</div>
-          <div style={{marginTop:8,fontSize:28,fontWeight:800}}>{overallPercent}%</div>
-          <div style={{color:'var(--muted)',marginTop:6}}>Target: 100%</div>
+    <div className="perjalanan-card">
+      <div className="perjalanan-head">
+        <div>
+          <div style={{fontSize:12,color:'var(--muted)'}}>Posisi Anda</div>
+          <div style={{fontSize:22,fontWeight:800,marginTop:6}}>🟡 MENUJU TARGET</div>
         </div>
-        <div className="dashboard-box">
-          <div style={{fontSize:12,color:'var(--muted)'}}>VERDICT</div>
-          <div style={{fontWeight:700,marginTop:8}}>Kurang: {subsGap} Subscriber</div>
-          <div style={{marginTop:6}}>Kurang: {hoursGap} Jam Tayang</div>
-          <div style={{marginTop:8,color:'var(--muted)'}}>Estimasi: 47 Hari Lagi</div>
+        <div style={{fontSize:44,fontWeight:900,color:'#60a5fa'}}>{overallPercent}%</div>
+      </div>
+
+      <div className="progress-summary">
+        <div>
+          <div style={{fontSize:13,color:'var(--muted)'}}>Kurang</div>
+          <div style={{fontSize:20,fontWeight:800,marginTop:6}}>{subsGap} Subscriber</div>
+          <div style={{marginTop:6,fontSize:20,fontWeight:800}}>{hoursGap} Jam Tayang</div>
         </div>
-        <div className="dashboard-box">
-          <div style={{fontSize:12,color:'var(--muted)'}}>PACKAGE STATUS</div>
-          <div style={{fontWeight:700,marginTop:8}}>{packageName}</div>
-          <div style={{marginTop:6}}>Hari ke: {packageInfo?.paymentStatus==='validated' ? days : 0} dari {eta}</div>
+        <div style={{textAlign:'right'}}>
+          <div style={{fontSize:13,color:'var(--muted)'}}>Estimasi</div>
+          <div style={{fontSize:20,fontWeight:800,marginTop:6}}>47 Hari Lagi</div>
         </div>
       </div>
 
-      <div style={{marginTop:16}}>
-        <div style={{fontSize:12,color:'var(--muted)'}}>Posisi</div>
+      <div style={{marginTop:24}}>
+        <div className="section-title">Paket Aktif</div>
+        <div className="card small-card">
+          <div style={{fontWeight:700}}>{packageName}</div>
+          <div style={{marginTop:6,color:'var(--muted)'}}>Hari ke: 1 dari {eta}</div>
+        </div>
+      </div>
+
+      <div style={{marginTop:24}}>
+        <div className="section-title">Posisi</div>
         <PositionCard label="Subscriber" value={channel.subscribers} target={subsTarget} />
         <PositionCard label="Jam Tayang" value={channel.watchHours} target={hoursTarget} />
       </div>

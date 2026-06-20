@@ -11,7 +11,7 @@ export default function Hero(){
           </p>
         </div>
         <div>
-          <button className="cta">Cek Channel Saya</button>
+          <button className="cta" onClick={onStart}>Cek Channel Saya</button>
         </div>
       </div>
     </section>

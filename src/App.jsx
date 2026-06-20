@@ -9,76 +9,88 @@ import DailyInsight from './components/DailyInsight'
 import DailyUpdates from './components/DailyUpdates'
 
 export default function App(){
-  const [connected, setConnected] = useState(false)
+  const [step, setStep] = useState('landing')
   const [channel, setChannel] = useState(null)
   const [selectedPackage, setSelectedPackage] = useState(null)
-  const [paymentStatus, setPaymentStatus] = useState('none')
-  const [paymentProof, setPaymentProof] = useState(null)
-  const [packageStartedAt, setPackageStartedAt] = useState(null)
+  const [isActivated, setIsActivated] = useState(false)
   const [dailyEvents, setDailyEvents] = useState([])
+
+  function startJourney(){
+    setStep('channel')
+  }
 
   function handleConnect(data){
     setChannel(data)
-    setConnected(true)
+    setStep('analysis')
+  }
+
+  function handleNextFromAnalysis(){
+    setStep('package')
   }
 
   function handleSelectPackage(pkg){
     setSelectedPackage(pkg)
+    setStep('checkout')
   }
 
-  function handleUploadProof(file){
-    setPaymentProof(file)
-    setPaymentStatus('awaiting')
-  }
-
-  function adminValidate(){
-    setPaymentStatus('validated')
-    setPackageStartedAt(new Date().toISOString())
+  function handleCheckout(){
+    setIsActivated(true)
     setDailyEvents([
       {label:'Kemarin', percent:81, note:'Subscriber bertambah 8'},
       {label:'Hari Ini', percent:82, note:'Subscriber bertambah 12'}
     ])
+    setStep('dashboard')
   }
 
   return (
     <div className="container">
-      <Hero />
-      <div className="grid">
-        <div>
-          <div className="card">
+      <Hero onStart={startJourney} />
+
+      <div className="step-view">
+        {step === 'landing' && <div className="empty-state" />}
+
+        {step === 'channel' && (
+          <div className="card screen-card channel-screen">
             <ChannelCheck onConnect={handleConnect} />
           </div>
+        )}
 
-          {connected && channel && (
-            <>
-              <div style={{height:18}} />
-              <VerdictSummary channel={channel} />
-              <div style={{height:18}} />
-              <ProgressDashboard channel={channel} packageInfo={{selectedPackage,paymentStatus,packageStartedAt}} />
-            </>
-          )}
-        </div>
+        {step === 'analysis' && channel && (
+          <div className="card screen-card analysis-screen">
+            <VerdictSummary channel={channel} />
+            <div style={{marginTop:24}}>
+              <button className="cta" onClick={handleNextFromAnalysis}>Lihat Rekomendasi Paket</button>
+            </div>
+          </div>
+        )}
 
-        <div>
-          <div className="card">
+        {step === 'package' && (
+          <div className="card screen-card package-screen">
             <PackageRecommendation selectedPackage={selectedPackage} onSelectPackage={handleSelectPackage} />
-            {selectedPackage && (
-              <>
-                <div style={{height:18}} />
-                <PaymentValidation pkg={selectedPackage} onUploadProof={handleUploadProof} paymentStatus={paymentStatus} paymentProof={paymentProof} />
-                <div style={{height:8}} />
-                <button className="secondary" onClick={adminValidate}>Simulasikan Validasi Admin</button>
-              </>
-            )}
           </div>
+        )}
 
-          <div style={{height:18}} />
-          <div className="card">
-            <DailyInsight />
-            <div style={{height:12}} />
-            <DailyUpdates events={dailyEvents} />
+        {step === 'checkout' && selectedPackage && (
+          <div className="card screen-card checkout-screen">
+            <PaymentValidation pkg={selectedPackage} onCheckout={handleCheckout} />
           </div>
-        </div>
+        )}
+
+        {step === 'dashboard' && isActivated && channel && (
+          <>
+            <div className="card screen-card dashboard-screen">
+              <ProgressDashboard channel={channel} packageInfo={{selectedPackage}} />
+            </div>
+            <div className="grid dashboard-widgets">
+              <div className="card">
+                <DailyInsight />
+              </div>
+              <div className="card">
+                <DailyUpdates events={dailyEvents} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
