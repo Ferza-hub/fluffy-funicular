@@ -7,6 +7,7 @@ import PaymentValidation from './components/PaymentValidation'
 import ProgressDashboard from './components/ProgressDashboard'
 import DailyInsight from './components/DailyInsight'
 import DailyUpdates from './components/DailyUpdates'
+import WhatsAppChatbot from './components/WhatsAppChatbot'
 
 export default function App(){
   const [step, setStep] = useState('landing')
@@ -43,7 +44,7 @@ export default function App(){
   }
 
   return (
-    <div className="container">
+    <div className={`container ${step === 'landing' ? 'landing-center' : ''}`}>
       <Hero onStart={startJourney} />
 
       <div className="step-view">
@@ -56,10 +57,12 @@ export default function App(){
         )}
 
         {step === 'analysis' && channel && (
-          <div className="card screen-card analysis-screen">
-            <VerdictSummary channel={channel} />
-            <div style={{marginTop:24}}>
-              <button className="cta" onClick={handleNextFromAnalysis}>Lihat Rekomendasi Paket</button>
+          <div className="analysis-layout">
+            <div className="analysis-panel card screen-card">
+              <VerdictSummary channel={channel} />
+            </div>
+            <div className="package-panel card screen-card">
+              <PackageRecommendation selectedPackage={selectedPackage} onSelectPackage={handleSelectPackage} />
             </div>
           </div>
         )}
@@ -92,6 +95,7 @@ export default function App(){
           </>
         )}
       </div>
+      <WhatsAppChatbot selectedPackage={selectedPackage} />
     </div>
   )
 }
